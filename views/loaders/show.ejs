@@ -1,0 +1,35 @@
+<% layout('layouts/boilerplate')%>
+
+<% let result = 0; %>
+
+<div class="row">
+<div class="col-6 offset-3">
+        <div class="card-body">
+            <h5 class="card-title"><%= loader.company.toUpperCase() %></h5>
+          
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Contact: <%= loader.contact %></li>
+            <li class="list-group-item">Phone: <%= loader.phone %></li>
+            <li class="list-group-item">Email: <%= loader.email %></li>
+            <li class="list-group-item">City: <%= loader.city %></li>
+            <li class="list-group-item">State: <%= loader.state %></li>
+            <li class="list-group-item">Zip: <%= loader.zip %></li>
+          </ul>
+          <div class="card-body">
+            <a class="card-link btn btn-info" href="/loaders/<%= loader._id %>/edit">Edit</a>
+            <form class="d-inline" action="/loaders/<%=loader._id%>?_method=DELETE" method="POST">
+              <button class="btn btn-danger">Delete</button>
+              </form>
+          </div>
+          <div class="card-body">
+         <a class="card-link btn btn-success" href="/loaders/<%=loader._id%>/accounts/new">Add New Account</a>
+          </div>
+          <div class="card-footer text-muted">
+              2 days ago
+            </div>
+        </div>
+        
+
+
+   

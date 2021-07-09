@@ -1,0 +1,41 @@
+<% layout('layouts/boilerplate')%>
+    <h1>All Loaders</h1>
+    <div>
+        <p>
+           <form action="/loaders" method="GET" class="form-inline">
+               <div class="form-group">
+                   <input type="text" name="search" placeholder="Search loaders..." class="form-control">
+                   <input type="submit" value="Search" class="btn btn-secondary">
+               </div>
+           </form> 
+        </p>
+        <!-- <a class="btn btn-info mb-2" href="/loaders/new">Add New Loader</a> -->
+    </div>
+    <ul>
+        <% for (let loader of loaders) {%>
+            <div class="card mb-2" style="width: 18rem;">
+                <div class="row">
+                    <div class="col-mg-8">
+                       <div class="card-body" style="mb-2">
+                           <h5 class="card-title"><%= loader.company %></h5>
+                           <h6 class="card-text"><%= loader.contact %></h6>
+                           <h6 class="card-text"><%= loader.phone %></h6>
+                           <h6 class="card-text"><%= loader.email %></h6>
+                           <h6 class="card-text"><%=loader.city + ", " + loader.state %></h6>
+                           <a class="btn btn-primary"href="/loaders/<%=loader._id%>">View</a>
+                       </div> 
+                    </div>
+                </div>
+
+            </div>
+        <% }%>
+    </ul>
+
+
+    <!-- <div>
+        <ul>
+            <% for(let loader of loaders) {%>
+                <li> <%= loader.company %> </li>
+            <% }%>
+        </ul>
+    </div> -->
