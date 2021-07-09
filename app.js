@@ -1,7 +1,22 @@
 const express = require('express');
 const path =  require('path');
 const mongoose = require('mongoose');
+const ejsMate = require('ejs-mate');
+const catchAsync = require('./utils/catchAsync')
+const methodOverride = require('method-override');
 const Loader = require('./models/loader');
+
+const NodeGeocoder = require('node-geocoder');
+
+const options = {
+    provider: 'mapquest',
+    httpAdapter: 'https',
+    apiKey: 'qXsAzfEZ95I9ATFAwGosrUZEFk7CMerF',
+    formatter: null
+};
+
+const geocoder = NodeGeocoder(options);
+
 
 mongoose.connect('mongodb://localhost:27017/loader-app', {
     useNewUrlParser: true,
@@ -17,7 +32,7 @@ db.once("open", () => {
 
 const app = express();
 
-
+app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
 
