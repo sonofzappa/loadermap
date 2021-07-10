@@ -3,8 +3,10 @@ const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError');
 const Loader = require('../models/loader');
+const { isLoggedIn } = require('../middleware')
 // GeoCoder //
 const NodeGeocoder = require('node-geocoder');
+
 
 const options = {
     provider: 'mapquest',
@@ -22,12 +24,12 @@ router.get('/', catchAsync(async (req, res) => {
 }))
 
 // NEW ROUTE //
-router.get('/new', (req, res) => {
-    res.render('loaders/new')
-});
+router.get('/new', isLoggedIn, (req, res) => {
+    res.render('loaders/new');
+})
 
 // SHOW ROUTE //
-router.get('/:id', catchAsync(async (req, res) => {
+router.get('/:id', isLoggedIn, catchAsync(async (req, res) => {
     const loader = await Loader.findById(req.params.id);
     if(!loader){
         req.flash('error', 'That loader cannot be found!')
@@ -37,7 +39,7 @@ router.get('/:id', catchAsync(async (req, res) => {
 }));
 
 // CREATE ROUTE //
-router.post('/', catchAsync(async (req, res) => {
+router.post('/', isLoggedIn, catchAsync(async (req, res) => {
 
     // const loaderSchema = Joi.object({
     //     loader: Joi.object({
