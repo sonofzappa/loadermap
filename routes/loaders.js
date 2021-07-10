@@ -29,7 +29,10 @@ router.get('/new', (req, res) => {
 // SHOW ROUTE //
 router.get('/:id', catchAsync(async (req, res) => {
     const loader = await Loader.findById(req.params.id);
-    console.log(loader)
+    if(!loader){
+        req.flash('error', 'That loader cannot be found!')
+        return res.redirect('/loaders');
+    }
     res.render('loaders/show', { loader });
 }));
 
@@ -60,12 +63,17 @@ router.post('/', catchAsync(async (req, res) => {
 
     const loader = new Loader(req.body.loader);
     await loader.save();
-    res.redirect('/loaders')
+    req.flash('success', 'Successfully added new loader');
+    res.redirect(`/loaders/${loader._id}`)
 }));
 
 // EDIT ROUTE //
 router.get('/:id/edit', catchAsync(async (req, res) => {
     const loader = await Loader.findById(req.params.id)
+    if(!loader){
+        req.flash('error', 'That loader cannot be found (or edited!!)!')
+        return res.redirect('/loaders');
+    }
     res.render('loaders/edit', { loader });
 }))
 
@@ -73,6 +81,8 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
 router.put('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const loader = await Loader.findByIdAndUpdate(id, { ...req.body.loader });
+    req.flash('success', 'Successfully updated loader!');
+
     res.redirect(`/loaders/${loader._id}`)
 }))
 
@@ -81,6 +91,8 @@ router.put('/:id', catchAsync(async (req, res) => {
 router.delete('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Loader.findByIdAndDelete(id);
+    req.flash('success', 'Successfully deleted new loader!');
+
     res.redirect('/loaders');
 }))
 
