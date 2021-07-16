@@ -4,6 +4,7 @@
 
 <div class="row">
 <div class="col-6 offset-3">
+  
         <div class="card-body">
             <h5 class="card-title"><%= loader.company.toUpperCase() %></h5>
           
@@ -16,17 +17,16 @@
             <li class="list-group-item">State: <%= loader.state %></li>
             <li class="list-group-item">Zip: <%= loader.zip %></li>
           </ul>
-          <div class="card-body">
-            <a class="card-link btn btn-info" href="/loaders/<%= loader._id %>/edit">Edit</a>
-            <form class="d-inline" action="/loaders/<%=loader._id%>?_method=DELETE" method="POST">
-              <button class="btn btn-danger">Delete</button>
-              </form>
-          </div>
-          <div class="card-body">
-         <a class="card-link btn btn-success" href="/loaders/new">Add New Account</a>
-          </div>
-  
+          <%  if( currentUser && loader.author.equals(currentUser._id))  {%>
+            <div class="card-body">
+                <a class="card-link btn btn-info" href="/loaders/<%=loader._id%>/edit">Edit</a>
+                <form class="d-inline" action="/loaders/<%=loader._id%>?_method=DELETE" method="POST">
+                    <button class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+            <% } %>
       </div>
+     
         
 
 

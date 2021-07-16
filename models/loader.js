@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const Schema = mongoose.Schema;
 
 const LoaderSchema = new Schema({
     company: String,
@@ -10,6 +10,10 @@ const LoaderSchema = new Schema({
     state: String,
     zip: Number,
     notes: String,
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     location: {
         formattedAddress: String,
         latitude: Number,

@@ -1,13 +1,18 @@
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/enter">Loader App <span class="text-muted">Alpha</span></a>
+    <a class="navbar-brand" href="/">Loader App <span class="text-muted">Alpha</span></a>
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <div class="navbar-nav">
-          <a class="nav-link" href="/">Home</a>
+        <% if(!currentUser) {%>
+          
+          <% } else {%>
+          <a class="nav-link" href="/loaders">Home</a>
           <a class="nav-link" href="/loaders/new">New Loader</a>
           <a class="nav-link" href="/map">Map</a>
+          <% } %>
         </div>
 
         <div class="navbar-nav ml-auto">
@@ -16,6 +21,7 @@
           <a class="nav-link" href="/register">Register</a>
           <% } else {%>
           <a class="nav-link" href="/logout">Logout</a>
+
           <% } %>
         </div>
       </div>

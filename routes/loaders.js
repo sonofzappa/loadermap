@@ -16,9 +16,18 @@ const options = {
 };
 const geocoder = NodeGeocoder(options);
 
+const isAuthor = async (req, res, next) => {
+    const { id } = req.params;
+    const loader = await Loader.findById(id);
+    if (!loader.author.equals(req.user._id)) {
+        req.flash('error', 'That loader cannot be found (or edited)!')
+        return res.redirect('/loaders');
+    }
+    next();
+}
 
 // INDEX //
-router.get('/', catchAsync(async (req, res) => {
+router.get('/', isLoggedIn, catchAsync(async (req, res) => {
     const loaders = await Loader.find({});
     res.render('loaders/index', { loaders })
 }))
@@ -62,27 +71,37 @@ router.post('/', isLoggedIn, catchAsync(async (req, res) => {
     if (result && result.length) {
         req.body.loader.location = result[0];
     }
-
+    
     const loader = new Loader(req.body.loader);
+    loader.author = req.user._id;
+
     await loader.save();
+    console.log(loader.location);
+    console.log(loader.author.id);
     req.flash('success', 'Successfully added new loader');
     res.redirect(`/loaders/${loader._id}`)
 }));
 
 // EDIT ROUTE //
-router.get('/:id/edit', catchAsync(async (req, res) => {
-    const loader = await Loader.findById(req.params.id)
-    if(!loader){
-        req.flash('error', 'That loader cannot be found (or edited!!)!')
-        return res.redirect('/loaders');
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const loader = await Loader.findById(id)
+    if(!loader.author.equals(req.user._id)){
+        req.flash('error', 'You do not have the permission to do that');
+        return res.redirect(`/loaders/${id}`);
     }
     res.render('loaders/edit', { loader });
 }))
 
 // UPDATE ROUTE //
-router.put('/:id', catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const { id } = req.params;
-    const loader = await Loader.findByIdAndUpdate(id, { ...req.body.loader });
+    const loader = await Loader.findById(id)
+    if(!loader.author.equals(req.user._id)){
+        req.flash('error', 'You do not have the permission to do that');
+        return res.redirect(`/loaders/${id}`);
+    }
+    const load = await Loader.findByIdAndUpdate(id, { ...req.body.loader });
     req.flash('success', 'Successfully updated loader!');
 
     res.redirect(`/loaders/${loader._id}`)
@@ -90,7 +109,7 @@ router.put('/:id', catchAsync(async (req, res) => {
 
 // REMOVE ROUTE //
 
-router.delete('/:id', catchAsync(async (req, res) => {
+router.delete('/:id',isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const { id } = req.params;
     await Loader.findByIdAndDelete(id);
     req.flash('success', 'Successfully deleted new loader!');
