@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
-const ExpressError = require('../utils/ExpressError');
 const Loader = require('../models/loader');
-const { isLoggedIn } = require('../middleware')
+const { isLoggedIn, isAuthor } = require('../middleware')
 // GeoCoder //
 const NodeGeocoder = require('node-geocoder');
 
@@ -15,16 +14,6 @@ const options = {
     formatter: null
 };
 const geocoder = NodeGeocoder(options);
-
-const isAuthor = async (req, res, next) => {
-    const { id } = req.params;
-    const loader = await Loader.findById(id);
-    if (!loader.author.equals(req.user._id)) {
-        req.flash('error', 'That loader cannot be found (or edited)!')
-        return res.redirect('/loaders');
-    }
-    next();
-}
 
 // INDEX //
 router.get('/', isLoggedIn, catchAsync(async (req, res) => {
