@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const session = require('express-session');
 const flash = require('connect-flash');
+const { loaderSchema } = require('./schema');
 const Joi = require('joi');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
@@ -70,20 +71,6 @@ app.use((req, res, next) =>{
 
 app.use('/', userRoutes)
 app.use('/loaders', loaderRoutes)
-
-
-
-// GeoCoder //
-const NodeGeocoder = require('node-geocoder');
-
-const options = {
-    provider: 'mapquest',
-    httpAdapter: 'https',
-    apiKey: 'qXsAzfEZ95I9ATFAwGosrUZEFk7CMerF',
-    formatter: null
-};
-const geocoder = NodeGeocoder(options);
-
 
 
 // ROUTES //

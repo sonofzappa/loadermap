@@ -1,109 +1,33 @@
 const express = require('express');
 const router = express.Router();
+const loaders = require('../controllers/loaders');
 const catchAsync = require('../utils/catchAsync');
+const { isLoggedIn, isAuthor, validateLoader } = require('../middleware')
+
 const Loader = require('../models/loader');
-const { isLoggedIn, isAuthor } = require('../middleware')
-// GeoCoder //
-const NodeGeocoder = require('node-geocoder');
 
-
-const options = {
-    provider: 'mapquest',
-    httpAdapter: 'https',
-    apiKey: 'qXsAzfEZ95I9ATFAwGosrUZEFk7CMerF',
-    formatter: null
-};
-const geocoder = NodeGeocoder(options);
 
 // INDEX //
-router.get('/', isLoggedIn, catchAsync(async (req, res) => {
-    const loaders = await Loader.find({});
-    res.render('loaders/index', { loaders })
-}))
+router.get('/', isLoggedIn, catchAsync(loaders.index));
 
 // NEW ROUTE //
-router.get('/new', isLoggedIn, (req, res) => {
-    res.render('loaders/new');
-})
+router.get('/new', isLoggedIn, loaders.renderNewForm);
 
 // SHOW ROUTE //
-router.get('/:id', isLoggedIn, catchAsync(async (req, res) => {
-    const loader = await Loader.findById(req.params.id);
-    if(!loader){
-        req.flash('error', 'That loader cannot be found!')
-        return res.redirect('/loaders');
-    }
-    res.render('loaders/show', { loader });
-}));
+router.get('/:id', isLoggedIn, catchAsync(loaders.show));
 
 // CREATE ROUTE //
-router.post('/', isLoggedIn, catchAsync(async (req, res) => {
-
-    // const loaderSchema = Joi.object({
-    //     loader: Joi.object({
-    //         company: Joi.string().required(),
-    //     //     contact: Joi.string().required(),
-    //     //     phone: Joi.number().required().min(7),
-    //     //     company: Joi.string().required(),
-    //     //     email: Joi.string()
-    //     // .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
-    //     }).required()
-    // })
-    // const joiResult = loader.Schema.validate(req.body);
-    // console.log(joiResult)
-    // Using callback
-    let location = req.body.loader.city + " " + req.body.loader.state;
-    if (req.body.loader.zip) {
-        location = location + " " + req.body.loader.zip;
-    }
-    const result = await geocoder.geocode(location);
-    if (result && result.length) {
-        req.body.loader.location = result[0];
-    }
-    
-    const loader = new Loader(req.body.loader);
-    loader.author = req.user._id;
-
-    await loader.save();
-    console.log(loader.location);
-    console.log(loader.author.id);
-    req.flash('success', 'Successfully added new loader');
-    res.redirect(`/loaders/${loader._id}`)
-}));
+router.post('/', isLoggedIn, validateLoader, catchAsync(loaders.createLoader));
 
 // EDIT ROUTE //
-router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const loader = await Loader.findById(id)
-    if(!loader.author.equals(req.user._id)){
-        req.flash('error', 'You do not have the permission to do that');
-        return res.redirect(`/loaders/${id}`);
-    }
-    res.render('loaders/edit', { loader });
-}))
+router.get('/:id/edit', isLoggedIn, isAuthor,  catchAsync(loaders.renderEditForm));
+
 
 // UPDATE ROUTE //
-router.put('/:id', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const loader = await Loader.findById(id)
-    if(!loader.author.equals(req.user._id)){
-        req.flash('error', 'You do not have the permission to do that');
-        return res.redirect(`/loaders/${id}`);
-    }
-    const load = await Loader.findByIdAndUpdate(id, { ...req.body.loader });
-    req.flash('success', 'Successfully updated loader!');
-
-    res.redirect(`/loaders/${loader._id}`)
-}))
+router.put('/:id', isLoggedIn, isAuthor, validateLoader, catchAsync(loaders.updateLoader));
 
 // REMOVE ROUTE //
 
-router.delete('/:id',isLoggedIn, isAuthor, catchAsync(async (req, res) => {
-    const { id } = req.params;
-    await Loader.findByIdAndDelete(id);
-    req.flash('success', 'Successfully deleted new loader!');
-
-    res.redirect('/loaders');
-}))
+router.delete('/:id',isLoggedIn, isAuthor, catchAsync(loaders.deleteLoader));
 
 module.exports = router;

@@ -1,3 +1,5 @@
+const { loaderSchema } = require('./schema');
+
 const ExpressError = require('./utils/ExpressError');
 const Loader = require('./models/loader');
 
@@ -9,6 +11,16 @@ module.exports.isLoggedIn = (req, res, next) => {
         return res.redirect('/login');
     }
     next();
+}
+
+module.exports.validateLoader = (req, res, next) => {
+    const { error } = loaderSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
 }
 
 module.exports.isAuthor = async (req, res, next) => {
