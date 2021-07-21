@@ -6,7 +6,6 @@ module.exports.loaderSchema = Joi.object({
         contact: Joi.string().required(),
         phone: Joi.number().required().min(7),
         email: Joi.string(),
-        city: Joi.string(),
-        state: Joi.string()
+        location: Joi.string()
     }).required()
 });

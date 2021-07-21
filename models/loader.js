@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const opts = { toJSON: { virtuals: true } };
+
 const LoaderSchema = new Schema({
     company: String,
     geometry: {
@@ -15,7 +17,7 @@ const LoaderSchema = new Schema({
         }
     },
     contact: String,
-    phone: Number,
+    phone: String,
     email: String,
     location: String,
     notes: String,
@@ -24,6 +26,12 @@ const LoaderSchema = new Schema({
         ref: 'User'
     },
     
+}, opts);
+
+LoaderSchema.virtual('properties.popUpMarkup').get(function () {
+    return `
+    <strong><a href="/loaders/${this._id}">${this.company}</a><strong>
+    <p>${this.phone}...</p>`
 });
 
 module.exports = mongoose.model('Loader', LoaderSchema);
