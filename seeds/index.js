@@ -24,10 +24,13 @@ const seedDB = async () => {
         const random1000 = Math.floor(Math.random() * 1000);
         const surcharge = Math.random() * 5;
         const loader = new Loader({
+            author: '60f1910046574634b8d47e9d',
             company: `${sample(descriptors)} ${sample(places)}`,
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
-            description:  'When the drinks flow, this place rocks.',
-            surcharge
+            geometry: {
+                type: "Point",
+                coordinates: [-113.1331, 47.0202]
+            }
         })
         await loader.save()
     }

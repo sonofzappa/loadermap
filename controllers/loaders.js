@@ -1,6 +1,7 @@
 const Loader = require('../models/loader');
-const Joi = require('joi');
-
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 
 
 module.exports.index = async (req, res) => {
@@ -20,10 +21,16 @@ module.exports.show = async (req, res) => {
     res.render('loaders/show', { loader });
 };
 
-module.exports.createLoader = async (req, res) => {    
+module.exports.createLoader = async (req, res) => {  
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.loader.location,
+        limit: 1
+    }).send() 
     const loader = new Loader(req.body.loader);
+    loader.geometry = geoData.body.features[0].geometry;
     loader.author = req.user._id;
     await loader.save();
+    console.log(loader);
     req.flash('success', 'Successfully added new loader');
     res.redirect(`/loaders/${loader._id}`)
 };
@@ -40,7 +47,7 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateLoader = async (req, res) => {
     const { id } = req.params;
-    const loader = await Loader.findById(id, { ...req.body.loader });
+    const loader = await Loader.findByIdAndUpdate(id, { ...req.body.loader });
     req.flash('success', 'Successfully updated loader!');
     res.redirect(`/loaders/${loader._id}`)
 };
