@@ -6,7 +6,7 @@ center: [-103.59179687498357, 40.66995747013945],
 zoom: 3
 });
 
-map.addControl(new mapboxgl.NavigationControl());
+map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
  
 map.on('load', function () {
@@ -130,3 +130,11 @@ map.on('mouseleave', 'clusters', function () {
 map.getCanvas().style.cursor = '';
 });
 });
+
+// Add the control to the map.
+map.addControl(
+new MapboxGeocoder({
+accessToken: mapboxgl.accessToken,
+mapboxgl: mapboxgl
+})
+);

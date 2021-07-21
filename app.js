@@ -83,8 +83,13 @@ app.get('/', (req, res) => {
     res.render('enter')
 });
 
-app.get('/map', (req, res) => {
-    res.render('map')
+app.get('/home', (req, res) => {
+    res.render('home')
+});
+
+app.get('/map', async(req, res) => {
+    const loaders = await Loader.find({});
+    res.render('map', { loaders })
 });
 
 app.all('*', (req, res, next) => {
