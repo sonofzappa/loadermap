@@ -80,7 +80,7 @@ app.use('/loaders', loaderRoutes)
 
 // ROUTES //
 app.get('/', (req, res) => {
-    res.render('home')
+    res.render('enter')
 });
 
 app.get('/map', (req, res) => {
