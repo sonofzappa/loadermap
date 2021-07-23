@@ -27,7 +27,7 @@ module.exports.loaderSchema = Joi.object({
     loader: Joi.object({
         company: Joi.string().required().escapeHTML(),
         contact: Joi.string().required().escapeHTML(),
-        phone: Joi.number().required().min(7),
+        phone: Joi.string().required().min(7),
         email: Joi.string().escapeHTML(),
         location: Joi.string().escapeHTML()
     }).required()

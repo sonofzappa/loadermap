@@ -46,8 +46,16 @@ module.exports.renderEditForm = async (req, res) => {
 }
 
 module.exports.updateLoader = async (req, res) => {
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.loader.location,
+        limit: 1
+    }).send() 
     const { id } = req.params;
     const loader = await Loader.findByIdAndUpdate(id, { ...req.body.loader });
+    loader.geometry = geoData.body.features[0].geometry;
+    loader.author = req.user._id;
+    await loader.save();
+    console.log(loader);
     req.flash('success', 'Successfully updated loader!');
     res.redirect(`/loaders/${loader._id}`)
 };

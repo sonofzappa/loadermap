@@ -3,12 +3,13 @@ const router = express.Router();
 const passport = require('passport');
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/user');
+const { isLoggedIn, isAuthor, validateLoader } = require('../middleware')
 
-router.get('/register', (req, res) => {
+router.get('/register', isLoggedIn, catchAsync(async(req, res) => {
     res.render('users/register')
-})
+}))
 
-router.post('/register', catchAsync(async(req, res, next) => {
+router.post('/register', isLoggedIn, catchAsync(async(req, res, next) => {
     try {
     const {email, username, password} = req.body;
     const user = new User({email, username});
