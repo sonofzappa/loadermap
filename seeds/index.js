@@ -10,12 +10,6 @@ const { captureRejectionSymbol } = require('events');
 const faker = require('faker');
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp'
 
-mongoose.connect('mongodb://localhost:27017/loader-app', {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true
-});
-
 const db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "connection error:"));
