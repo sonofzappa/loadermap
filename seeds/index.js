@@ -6,7 +6,7 @@ if (process.env.NODE_ENV !== "production") {
 const mongoose = require('mongoose');
 const cities = require('./cities');
 const {places, descriptors} = require('./seedHelpers');
-const Loader = require('../models/Loader');
+const Loader = require('../models/loader');
 const { captureRejectionSymbol } = require('events');
 const faker = require('faker');
 
