@@ -24,7 +24,7 @@ db.once("open", () => {
 })
 
 
-mongoose.connect(dbURL, {
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
