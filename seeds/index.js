@@ -1,7 +1,20 @@
 if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
   }
-  const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp'
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp'
+
+  mongoose.connect('mongodb://localhost:27017/loader-app', {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+});
+
+const db = mongoose.connection;
+
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", () => {
+    console.log("Database connected")
+})
 
 const mongoose = require('mongoose');
 const cities = require('./cities');
@@ -16,15 +29,11 @@ mongoose.connect('mongodb://localhost:27017/loader-app', {
     useUnifiedTopology: true
 });
 
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => {
-    console.log("Database connected")
-})
+
 
 const sample = array => array[Math.floor(Math.random() * array.length)];
 
-const seedDB = async () => {
+const seedDB = async() => {
     await Loader.deleteMany({});
     for (let i = 0; i < 300; i++){
         const random1000 = Math.floor(Math.random() * 1000);
