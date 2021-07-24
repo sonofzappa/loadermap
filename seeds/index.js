@@ -24,7 +24,7 @@ db.once("open", () => {
 })
 
 
-mongoose.connect('mongodb://localhost:27017/loader-app', {
+mongoose.connect(dbURL, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
